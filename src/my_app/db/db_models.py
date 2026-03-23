@@ -29,14 +29,13 @@ class Bike(Base):
     )  # available/rented/maintenance
 
     station_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey("stations.id", ondelete="SET NULL"),
+        ForeignKey("stations.id", ondelete="SET NULL"), # we allow bike_id to become NULL via ondelete="SET NULL"
         nullable=True,
     )
-    # Keep rentals for history if bike is deleted:
-    # we allow bike_id to become NULL via ondelete="SET NULL"
+    
     rentals: Mapped[List["Rental"]] = relationship(
-        back_populates="bike",
-        passive_deletes=True,
+        back_populates="bike", # This sets up a bidirectional relationship between Bike and Rental. The rentals attribute on the Bike model will contain a list of Rental objects that are associated with that bike, and the bike attribute on the Rental model will reference the Bike object that is associated with that rental.
+        passive_deletes=True, # Keep rentals for history if bike is deleted
     )
 
 

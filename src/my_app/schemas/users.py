@@ -35,4 +35,4 @@ class UserResponse(BaseModel):
     email: EmailStr
     role: str
     is_active: bool
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True) #This configuration allows the Pydantic model to be created from an ORM object, which is useful when we want to return database models directly as API responses.

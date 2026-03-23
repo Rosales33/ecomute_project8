@@ -9,7 +9,7 @@ from src.my_app.main import app
 TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
 
 
-@pytest.fixture
+@pytest.fixture # This runs before every test function
 async def test_db_session():
     """
     Creates a fresh database for every single test function.
@@ -34,7 +34,7 @@ async def test_db_session():
         await conn.run_sync(Base.metadata.drop_all)
 
 
-@pytest.fixture
+@pytest.fixture # This runs before every test function
 async def client(test_db_session):
     """
     A fake browser (HTTP Client) that calls our API.

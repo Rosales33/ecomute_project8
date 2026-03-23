@@ -33,6 +33,6 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
+async def get_db() -> AsyncGenerator[AsyncSession, None]: # This function is a FastAPI dependency that provides a database session to route handlers. It creates a new session for each request and ensures that it is properly closed after the request is processed.
     async with AsyncSessionLocal() as session:
         yield session

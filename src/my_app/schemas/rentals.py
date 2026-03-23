@@ -24,7 +24,7 @@ class RentalProcessing(BaseModel):
     bike_battery: int
     user_id: int
 
-    @model_validator(mode="after")
+    @model_validator(mode="after") # model_validator permite realizar validaciones que dependen de múltiples campos o del estado completo del modelo. En este caso, ya que tenemos el field_validator en RentalOutcome, no es estrictamente necesario tener esta validación aquí también.
     def check_battery(self):
         if self.bike_battery < 20:
             raise ValueError("Bike battery too low for rental.")

@@ -17,7 +17,7 @@ async def create_rental_with_checks(db: AsyncSession, user_id: int, bike_id: int
         raise HTTPException(status_code=404, detail="Bike not found")
 
     try:
-        RentalProcessing(bike_battery=int(bike.battery), user_id=user_id)
+        RentalProcessing(bike_battery=int(bike.battery), user_id=user_id) # Aquí es donde se realiza la validación de la batería. Si la batería es menor a 20, se lanzará una excepción y se devolverá un error 422 al cliente.
     except ValidationError:
         raise HTTPException(status_code=422, detail="Bike battery too low for rental.")
 

@@ -30,10 +30,10 @@ def train_and_save_model() -> Path:
     y = df["minutes"]
 
     model = LinearRegression()
-    model.fit(x, y)
+    model.fit(x, y) # Train the model on our dataset
 
     output_path = Path(__file__).resolve().parent / "trip_predictor.joblib"
-    joblib.dump(model, output_path)
+    joblib.dump(model, output_path) # Save the trained model to disk for later use in our API
     return output_path
 
 

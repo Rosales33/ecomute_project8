@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoMute Project 8 - Architecture Diagram</title>
+  <style>
+    :root {
+      --bg: #edf3ee;
+      --surface: #ffffff;
+      --text: #20312a;
+      --muted: #5f7068;
+      --line: #cfddd3;
+
+      --blue: #2563eb;
+      --blue-soft: #dbeafe;
+      --green: #1d7a43;
+      --green-soft: #dff4e7;
+      --amber: #b7791f;
+      --amber-soft: #fff1cf;
+      --red: #c2410c;
+      --red-soft: #ffe6dc;
+      --teal: #0f766e;
+      --teal-soft: #d7f5f1;
+      --slate: #64748b;
+      --slate-soft: #eff4f8;
+
+      --shadow: 0 12px 30px rgba(30, 41, 59, 0.08);
+      --radius: 18px;
+      --radius-sm: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(29, 122, 67, 0.10), transparent 25%),
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.10), transparent 28%),
+        linear-gradient(180deg, #f6faf7 0%, var(--bg) 100%);
+      color: var(--text);
+      padding: 40px 24px 64px;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .brand-mark {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #1d7a43, #0f766e);
+      display: grid;
+      place-items: center;
+      color: white;
+      box-shadow: var(--shadow);
+      font-size: 28px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .badge-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .badge {
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .warning {
+      background: var(--amber-soft);
+      border-color: #edc97a;
+      color: #8a5b13;
+    }
+
+    .diagram {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .layer {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .layer-label {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .layer-label span {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #8aa094;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 2px solid transparent;
+      padding: 22px 24px;
+    }
+
+    .client .card { border-color: #bfd5ff; }
+    .frontend .card { border-color: #b8e9df; }
+    .api .card { border-color: #b8e7c6; }
+    .lower-grid .db-card { border-color: #f1d08d; }
+    .lower-grid .ml-card { border-color: #f2b6a0; }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .title-wrap {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .client .icon { background: var(--blue-soft); color: var(--blue); }
+    .frontend .icon { background: var(--teal-soft); color: var(--teal); }
+    .api .icon { background: var(--green-soft); color: var(--green); }
+    .db-card .icon { background: var(--amber-soft); color: var(--amber); }
+    .ml-card .icon { background: var(--red-soft); color: var(--red); }
+
+    .title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .meta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .port {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--green);
+      background: var(--green-soft);
+      white-space: nowrap;
+    }
+
+    .chip-row,
+    .grid,
+    .mini-grid,
+    .repo-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .chip-row {
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    }
+
+    .chip {
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--slate-soft);
+      border: 1px solid #dce7ef;
+      font-size: 0.78rem;
+      color: var(--slate);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .grid {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      margin-bottom: 14px;
+    }
+
+    .endpoint,
+    .mini,
+    .repo,
+    .model {
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+    }
+
+    .endpoint {
+      background: #f3fbf5;
+      border: 1px solid #cce7d4;
+    }
+
+    .method {
+      font-size: 0.64rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      color: var(--green);
+    }
+
+    .path {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.82rem;
+      color: #10231a;
+      font-weight: 700;
+    }
+
+    .mini-grid {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      margin-top: 14px;
+    }
+
+    .mini {
+      background: #f6faf8;
+      border: 1px solid var(--line);
+    }
+
+    .mini strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      color: var(--text);
+    }
+
+    .mini span {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .connector {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2px 0;
+    }
+
+    .arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 240px;
+    }
+
+    .stem {
+      width: 4px;
+      height: 18px;
+      border-radius: 999px;
+      background: #b9c8c0;
+    }
+
+    .arrow-label {
+      background: var(--surface);
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .arrow-head {
+      color: #8ea095;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .split .arrow {
+      width: 100%;
+    }
+
+    .amber .stem,
+    .amber .arrow-head { background: var(--amber); color: var(--amber); }
+    .amber .arrow-label { border-color: #edc97a; color: #8a5b13; }
+
+    .red .stem,
+    .red .arrow-head { background: var(--red); color: var(--red); }
+    .red .arrow-label { border-color: #efb19d; color: var(--red); }
+
+    .lower-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .repo-grid,
+    .model-grid {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      margin-top: 12px;
+    }
+
+    .repo {
+      background: #f5fbf7;
+      border: 1px solid #cde7d8;
+    }
+
+    .repo-name,
+    .model-name {
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .repo-note,
+    .model-note,
+    .flow-note {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .model {
+      background: var(--amber-soft);
+      border: 1px solid #efcf8d;
+    }
+
+    .flow-box {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .flow-step {
+      background: var(--red-soft);
+      border: 1px solid #efb19d;
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .flow-step strong {
+      display: block;
+      color: var(--red);
+      font-size: 0.76rem;
+      margin-bottom: 4px;
+    }
+
+    .legend {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .legend span {
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: rgba(255,255,255,0.65);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.9em;
+    }
+
+    @media (max-width: 860px) {
+      .header,
+      .lower-grid,
+      .split {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .badge-group {
+        justify-content: flex-start;
+      }
+
+      .card-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .layer {
+        grid-template-columns: 1fr;
+      }
+
+      .layer-label {
+        justify-content: flex-start;
+      }
+
+      .layer-label span {
+        writing-mode: horizontal-tb;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="brand">
+        <div class="brand-mark">E</div>
+        <div>
+          <h1>EcoMute Project 8</h1>
+          <div class="subtitle">System connection diagram for the current repository structure</div>
+        </div>
+      </div>
+      <div class="badge-group">
+        <span class="badge">FastAPI + SQLAlchemy</span>
+        <span class="badge">Streamlit + scikit-learn</span>
+        <span class="badge warning">Current DB: SQLite, not Postgres</span>
+      </div>
+    </div>
+
+    <div class="diagram">
+      <section class="layer client">
+        <div class="layer-label"><span>Client</span></div>
+        <div class="card">
+          <div class="card-head">
+            <div class="title-wrap">
+              <div class="icon">C</div>
+              <div>
+                <p class="title">Browser / API Consumer</p>
+                <div class="meta">Swagger UI, Streamlit user, curl or Postman</div>
+              </div>
+            </div>
+          </div>
+          <div class="chip-row">
+            <div class="chip">HTTP + JSON</div>
+            <div class="chip">OAuth2 password form</div>
+            <div class="chip">JWT bearer token</div>
+            <div class="chip">Admin API key header</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="connector">
+        <div class="arrow">
+          <div class="stem"></div>
+          <div class="arrow-label">Requests flow into the UI or directly into FastAPI</div>
+          <div class="stem"></div>
+          <div class="arrow-head">▼</div>
+        </div>
+      </div>
+
+      <section class="layer frontend">
+        <div class="layer-label"><span>Frontend</span></div>
+        <div class="card">
+          <div class="card-head">
+            <div class="title-wrap">
+              <div class="icon">S</div>
+              <div>
+                <p class="title">Streamlit UI</p>
+                <div class="meta"><code>src/frontend/app.py</code> posts prediction inputs to FastAPI</div>
+              </div>
+            </div>
+            <div class="port">default :8501</div>
+          </div>
+          <div class="mini-grid">
+            <div class="mini">
+              <strong>User input</strong>
+              <span>Distance in km and battery percentage selected with sliders.</span>
+            </div>
+            <div class="mini">
+              <strong>API call</strong>
+              <span><code>requests.post(...)</code> sends payload to <code>/predict/</code>.</span>
+            </div>
+            <div class="mini">
+              <strong>Response display</strong>
+              <span>Estimated minutes rendered with a metric component.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="connector">
+        <div class="arrow">
+          <div class="stem"></div>
+          <div class="arrow-label">Client or Streamlit sends HTTP requests to the API</div>
+          <div class="stem"></div>
+          <div class="arrow-head">▼</div>
+        </div>
+      </div>
+
+      <section class="layer api">
+        <div class="layer-label"><span>API</span></div>
+        <div class="card">
+          <div class="card-head">
+            <div class="title-wrap">
+              <div class="icon">F</div>
+              <div>
+                <p class="title">FastAPI Application</p>
+                <div class="meta"><code>src/my_app/main.py</code> creates tables on startup and mounts all routers</div>
+              </div>
+            </div>
+            <div class="port">default :8000</div>
+          </div>
+
+          <div class="grid">
+            <div class="endpoint"><div class="method">CRUD</div><div class="path">/bikes</div></div>
+            <div class="endpoint"><div class="method">CRUD</div><div class="path">/users</div></div>
+            <div class="endpoint"><div class="method">GET/POST</div><div class="path">/rentals</div></div>
+            <div class="endpoint"><div class="method">GET/POST</div><div class="path">/stations</div></div>
+            <div class="endpoint"><div class="method">POST</div><div class="path">/token</div></div>
+            <div class="endpoint"><div class="method">GET</div><div class="path">/admin/stats</div></div>
+            <div class="endpoint"><div class="method">POST</div><div class="path">/predict/</div></div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini">
+              <strong>Dependency injection</strong>
+              <span><code>Depends(get_db)</code>, current user auth, and admin-only guards.</span>
+            </div>
+            <div class="mini">
+              <strong>Service layer</strong>
+              <span><code>rentals_service</code> applies rental checks before creating records.</span>
+            </div>
+            <div class="mini">
+              <strong>Security</strong>
+              <span>JWT auth in <code>security.py</code> plus API-key protection for admin routes.</span>
+            </div>
+            <div class="mini">
+              <strong>Prediction path</strong>
+              <span><code>predictions_router.py</code> lazy-loads a joblib model and runs inference.</span>
+            </div>
+          </div>
+
+          <div class="repo-grid">
+            <div class="repo">
+              <div class="repo-name">Routers</div>
+              <div class="repo-note">bikes, users, rentals, stations, auth, admin, predictions</div>
+            </div>
+            <div class="repo">
+              <div class="repo-name">Repositories</div>
+              <div class="repo-note">Direct async CRUD with SQLAlchemy sessions</div>
+            </div>
+            <div class="repo">
+              <div class="repo-name">Schemas</div>
+              <div class="repo-note">Pydantic request validation and response serialization</div>
+            </div>
+            <div class="repo">
+              <div class="repo-name">Startup lifecycle</div>
+              <div class="repo-note">Calls <code>Base.metadata.create_all()</code> when the app starts</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="split">
+        <div class="connector">
+          <div class="arrow amber">
+            <div class="stem"></div>
+            <div class="arrow-label">Business and CRUD flow to SQLAlchemy models and DB</div>
+            <div class="stem"></div>
+            <div class="arrow-head">▼</div>
+          </div>
+        </div>
+        <div class="connector">
+          <div class="arrow red">
+            <div class="stem"></div>
+            <div class="arrow-label">Prediction route loads joblib model and calls <code>model.predict()</code></div>
+            <div class="stem"></div>
+            <div class="arrow-head">▼</div>
+          </div>
+        </div>
+      </div>
+
+      <section class="lower-grid">
+        <div class="card db-card">
+          <div class="card-head">
+            <div class="title-wrap">
+              <div class="icon">DB</div>
+              <div>
+                <p class="title">Data Layer</p>
+                <div class="meta"><code>src/my_app/db/database.py</code> uses <code>sqlite+aiosqlite:///./ecomute.db</code></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini">
+              <strong>Engine</strong>
+              <span>Async SQLAlchemy engine with session factory and <code>get_db()</code> dependency.</span>
+            </div>
+            <div class="mini">
+              <strong>ORM</strong>
+              <span>Declarative models define bikes, users, rentals and stations.</span>
+            </div>
+            <div class="mini">
+              <strong>Persistence</strong>
+              <span>Repositories commit and refresh entities on create and update operations.</span>
+            </div>
+          </div>
+
+          <div class="model-grid">
+            <div class="model">
+              <div class="model-name">Bike</div>
+              <div class="model-note">model, battery, status, station_id</div>
+            </div>
+            <div class="model">
+              <div class="model-name">User</div>
+              <div class="model-note">username, email, hashed_password, role</div>
+            </div>
+            <div class="model">
+              <div class="model-name">Rental</div>
+              <div class="model-note">bike_id, user_id, created_at</div>
+            </div>
+            <div class="model">
+              <div class="model-name">Station</div>
+              <div class="model-note">id, unique station name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ml-card">
+          <div class="card-head">
+            <div class="title-wrap">
+              <div class="icon">ML</div>
+              <div>
+                <p class="title">Machine Learning Path</p>
+                <div class="meta">Training in <code>src/ml/train.py</code>, inference in <code>predictions_router.py</code></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-box">
+            <div class="flow-step">
+              <strong>Train</strong>
+              <div class="flow-note">Fake dataset feeds a <code>LinearRegression</code> model.</div>
+            </div>
+            <div class="flow-step">
+              <strong>Persist</strong>
+              <div class="flow-note"><code>joblib.dump()</code> writes <code>trip_predictor.joblib</code>.</div>
+            </div>
+            <div class="flow-step">
+              <strong>Infer</strong>
+              <div class="flow-note">Prediction router loads the file and returns estimated minutes.</div>
+            </div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini">
+              <strong>Features</strong>
+              <span><code>distance_km</code> and <code>battery_level</code> are converted into a pandas DataFrame.</span>
+            </div>
+            <div class="mini">
+              <strong>Model file</strong>
+              <span><code>src/ml/trip_predictor.joblib</code> is required at runtime for <code>/predict/</code>.</span>
+            </div>
+            <div class="mini">
+              <strong>Isolation</strong>
+              <span>This path is separate from the SQL database flow; it does not query the DB.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="legend">
+      <span>Target shape requested: Client -> FastAPI -> SQLAlchemy/Postgres & scikit-learn</span>
+      <span>Implemented shape in this repo: Client -> FastAPI -> SQLAlchemy/SQLite & scikit-learn</span>
+      <span>Useful files: <code>src/my_app/main.py</code>, <code>src/frontend/app.py</code>, <code>src/my_app/routers/predictions_router.py</code></span>
+    </div>
+  </div>
+</body>
+</html>

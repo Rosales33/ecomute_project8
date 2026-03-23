@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from src.my_app.db.database import engine
 from src.my_app.db.db_models import Base
+from src.my_app.logger import logger
 from src.my_app.routers import (
     admin_router,
     auth_router,
@@ -16,12 +17,13 @@ from src.my_app.routers import (
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    print(">>> STARTUP: creating tables...")
+async def lifespan(app: FastAPI): # This function is used to manage the startup and shutdown events of the FastAPI application. It ensures that the database tables are created when the application starts and that the database connection is properly closed when the application shuts down.
+    logger.info("Application startup: creating database tables")
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    print(">>> STARTUP: done")
+    logger.info("Application startup complete")
     yield
+    logger.info("Application shutdown: disposing database engine")
     await engine.dispose()
 
 
