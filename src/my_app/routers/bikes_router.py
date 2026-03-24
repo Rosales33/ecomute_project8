@@ -9,7 +9,7 @@ from src.my_app.schemas.bikes import BikeCreate, BikeUpdate, BikeResponse
 router = APIRouter(prefix="/bikes", tags=["bikes"])
 
 
-@router.get("/", response_model=list[BikeResponse])
+@router.get("/", response_model=list[BikeResponse]) # response_model=list[BikeResponse] indicates that the endpoint will return a list of BikeResponse objects. This allows FastAPI to automatically validate and serialize the response data according to the defined schema.
 async def get_bikes(
     status: str | None = Query(default=None),
     db: AsyncSession = Depends(get_db), # Endpoint dependency injection: get_db is a function that provides a database session. By using Depends(get_db), FastAPI will automatically call get_db to get a database session and pass it to the route handler. This allows us to easily access the database within our route without having to manually create a session each time.

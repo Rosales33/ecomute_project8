@@ -25,7 +25,7 @@ async def list_rentals(db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/{rental_id}", response_model=RentalRead)
-async def get_rental(rental_id: int, db: AsyncSession = Depends(get_db)):
+async def get_rental(rental_id: int, db: AsyncSession = Depends(get_db)): #, current_user = Depends(get_current_user) para validar que el usuario autenticado solo pueda acceder a sus propios alquileres, o que un admin pueda acceder a todos los alquileres.
     rental = await rentals_repo.get_rental(db, rental_id)
     if not rental:
         logger.warning("Rental not found: rental_id=%s", rental_id)
